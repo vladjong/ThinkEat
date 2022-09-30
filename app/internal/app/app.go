@@ -14,6 +14,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/rs/cors"
 	httpSwagger "github.com/swaggo/http-swagger"
+	_ "github.com/vladjong/ThinkEat/docs"
 	"github.com/vladjong/ThinkEat/internal/config"
 	"github.com/vladjong/ThinkEat/internal/item"
 	"github.com/vladjong/ThinkEat/pkg/logging"
@@ -85,8 +86,7 @@ func (a *App) startHTTP() {
 		AllowedHeaders:     []string{"Location", "Charset", "Access-Control-Allow-Origin", "Content-Type", "content-type", "Origin", "Accept", "Content-Length", "Accept-Encoding", "X-CSRF-Token"},
 		OptionsPassthrough: true,
 		ExposedHeaders:     []string{"Location", "Authorization", "Content-Disposition"},
-		// Enable Debugging for testing, consider disabling in production
-		Debug: false,
+		Debug:              false,
 	})
 
 	handler := c.Handler(a.router)
