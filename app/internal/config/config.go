@@ -23,6 +23,15 @@ type Config struct {
 			Password string `env:"ADMIN_PWD" env-default:"admin"`
 		}
 	}
+	MongoDB struct {
+		Host       string `env:"HOST" env-default:"localhost"`
+		Port       string `env:"PORT" env-default:"27017"`
+		Database   string `env:"DATABASE" env-default:"user-service"`
+		Auth_db    string `env:"AUTH_DB" env-default:"admin"`
+		Username   string `env:"USERNAME" env-default:""`
+		Password   string `env:"AUTH_DB" env-default:""`
+		Collection string `env:"AUTH_DB" env-default:"users"`
+	}
 }
 
 var instance *Config

@@ -1,14 +1,12 @@
 package item
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
-
 type Item struct {
-	ID       primitive.ObjectID `json:"id" bson:"_id, omitempy"`
-	Name     string             `json:"name" bson:"name, omitempy"`
-	Describe string             `json:"describe" bson:"describe"`
-	Category []string           `json:"category" bson:"category, omitempy"`
-	Price    int                `json:"price" bson:"price, omitempy"`
-	Photo    string             `json:"photo" bson:"photo"`
+	ID       string   `json:"id" bson:"_id,omitempty"`
+	Name     string   `json:"name" bson:"name,omitempty"`
+	Describe string   `json:"describe" bson:"describe"`
+	Category []string `json:"category" bson:"category,omitempty"`
+	Price    int      `json:"price" bson:"price,omitempty"`
+	Photo    string   `json:"photo" bson:"photo"`
 	// laceId  Place
 }
 
