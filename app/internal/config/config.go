@@ -13,7 +13,7 @@ type Config struct {
 	Listen        struct {
 		Type       string `env:"LISTEN_TYPE" env-default:"port"`
 		BindIP     string `env:"IS_DEV" env-default:"0.0.0.0"`
-		Port       string `env:"PORT" env-default:"10000"`
+		Port       string `env:"PORT" env-default:"1234"`
 		SocketFile string `env:"SOCKET_FILE" env-default:"app.sock"`
 	}
 	AppConfig struct {
