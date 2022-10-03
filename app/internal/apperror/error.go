@@ -14,10 +14,6 @@ type AppError struct {
 }
 
 func (e *AppError) Error() string {
-	// error := e.Message
-	// if e.Err != nil {
-
-	// }
 	return e.Err.Error()
 }
 

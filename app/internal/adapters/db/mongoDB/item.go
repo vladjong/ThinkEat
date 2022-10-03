@@ -1,23 +1,23 @@
-package db
+package mongoDB
 
 import (
 	"context"
 	"errors"
 	"fmt"
 
-	"github.com/vladjong/ThinkEat/internal/item"
+	"github.com/vladjong/ThinkEat/internal/domain/entity"
 	"github.com/vladjong/ThinkEat/pkg/logging"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type db struct {
+type itemStorage struct {
 	collection *mongo.Collection
 	logger     *logging.Logger
 }
 
-func (d *db) Create(ctx context.Context, item item.Item) (string, error) {
+func (d *itemStorage) Create(ctx context.Context, item *entity.Item) (string, error) {
 	d.logger.Debug("Create item")
 	result, err := d.collection.InsertOne(ctx, item)
 	if err != nil {
@@ -31,7 +31,7 @@ func (d *db) Create(ctx context.Context, item item.Item) (string, error) {
 	return "", fmt.Errorf("failde to convert objectId to hex: %s", oid)
 }
 
-func (d *db) FindID(ctx context.Context, id string) (item item.Item, err error) {
+func (d *itemStorage) GetID(ctx context.Context, id string) (item *entity.Item, err error) {
 	oid, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return item, fmt.Errorf("failed to convert hex to objectId: %s", oid)
@@ -40,7 +40,6 @@ func (d *db) FindID(ctx context.Context, id string) (item item.Item, err error) 
 	result := d.collection.FindOne(ctx, filter)
 	if result.Err() != nil {
 		if errors.Is(result.Err(), mongo.ErrNoDocuments) {
-			//TODO
 			return item, fmt.Errorf("error not found documents")
 		}
 		return item, fmt.Errorf("failed to find one item by id: %s due to error %v", id, err)
@@ -51,7 +50,19 @@ func (d *db) FindID(ctx context.Context, id string) (item item.Item, err error) 
 	return item, nil
 }
 
-func (d *db) Update(ctx context.Context, item item.Item) error {
+func (d *itemStorage) GetName(ctx context.Context, name string) (items []*entity.Item, err error) {
+	filter := bson.M{"name": bson.M{"$regex": name}}
+	cursor, err := d.collection.Find(ctx, filter)
+	if err != nil {
+		return items, fmt.Errorf("failed to find all itens due to error: %v", err)
+	}
+	if err = cursor.All(ctx, &items); err != nil {
+		return items, fmt.Errorf("failed to read all documents error: %v", err)
+	}
+	return items, nil
+}
+
+func (d *itemStorage) Update(ctx context.Context, item *entity.Item) error {
 	objectID, err := primitive.ObjectIDFromHex(item.ID)
 	if err != nil {
 		return fmt.Errorf("failed to convert item ID to ObjectID ID=%s", item.ID)
@@ -75,14 +86,13 @@ func (d *db) Update(ctx context.Context, item item.Item) error {
 		return fmt.Errorf("failed to execute update item filter error: %v", err)
 	}
 	if result.MatchedCount == 0 {
-		//TODO
 		return fmt.Errorf("failed not found item")
 	}
 	d.logger.Tracef("Matched %d documents and Modified %d documents", result.MatchedCount, result.ModifiedCount)
 	return nil
 }
 
-func (d *db) Delete(ctx context.Context, id string) error {
+func (d *itemStorage) Delete(ctx context.Context, id string) error {
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return fmt.Errorf("failed to convert item ID to ObjectID ID=%s", id)
@@ -96,7 +106,7 @@ func (d *db) Delete(ctx context.Context, id string) error {
 	return nil
 }
 
-func (d *db) FindAll(ctx context.Context) (items []item.Item, err error) {
+func (d *itemStorage) GetAll(ctx context.Context) (items []*entity.Item, err error) {
 	cursor, err := d.collection.Find(ctx, bson.M{})
 	if cursor.Err() != nil {
 		return items, fmt.Errorf("failed to find all itens due to error: %v", err)
@@ -107,8 +117,8 @@ func (d *db) FindAll(ctx context.Context) (items []item.Item, err error) {
 	return items, nil
 }
 
-func NewStorage(database *mongo.Database, collection string, logger *logging.Logger) item.Storage {
-	return &db{
+func NewStorage(database *mongo.Database, collection string, logger *logging.Logger) *itemStorage {
+	return &itemStorage{
 		collection: database.Collection(collection),
 		logger:     logger,
 	}

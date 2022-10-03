@@ -16,7 +16,7 @@ import (
 	httpSwagger "github.com/swaggo/http-swagger"
 	_ "github.com/vladjong/ThinkEat/docs"
 	"github.com/vladjong/ThinkEat/internal/config"
-	"github.com/vladjong/ThinkEat/internal/item"
+	"github.com/vladjong/ThinkEat/internal/controller/http/handlershtpp"
 	"github.com/vladjong/ThinkEat/pkg/logging"
 )
 
@@ -36,7 +36,7 @@ func NewApp(config *config.Config, logger *logging.Logger) (App, error) {
 	router.Handler(http.MethodGet, "/swagger/*any", httpSwagger.WrapHandler)
 
 	logger.Println("Item initializing")
-	item := item.NewHandler()
+	item := handlershtpp.NewHandler()
 	item.Register(router)
 
 	app := App{
