@@ -15,9 +15,12 @@ import (
 	"github.com/rs/cors"
 	httpSwagger "github.com/swaggo/http-swagger"
 	_ "github.com/vladjong/ThinkEat/docs"
+	"github.com/vladjong/ThinkEat/internal/adapters/db/mongoDB"
 	"github.com/vladjong/ThinkEat/internal/config"
-	"github.com/vladjong/ThinkEat/internal/controller/http/handlershtpp"
+	v1 "github.com/vladjong/ThinkEat/internal/controller/http/v1"
+	"github.com/vladjong/ThinkEat/internal/usercases"
 	"github.com/vladjong/ThinkEat/pkg/logging"
+	"github.com/vladjong/ThinkEat/pkg/mongodb"
 )
 
 type App struct {
@@ -28,15 +31,30 @@ type App struct {
 }
 
 func NewApp(config *config.Config, logger *logging.Logger) (App, error) {
-	logger.Println("Router initializing")
+	logger.Info("Initializing HTTP router")
+
 	router := httprouter.New()
 
 	logger.Println("Swagger docs initializing")
 	router.Handler(http.MethodGet, "/swagger", http.RedirectHandler("/swagger/index.html", http.StatusMovedPermanently))
 	router.Handler(http.MethodGet, "/swagger/*any", httpSwagger.WrapHandler)
 
-	logger.Println("Item initializing")
-	item := handlershtpp.NewHandler()
+	logger.Println("Mongo DB initializing")
+
+	mongoDBClient, err := mongodb.NewClient(context.Background(), config.MongoDB.Host, config.MongoDB.Port, config.MongoDB.Username, config.MongoDB.Password, config.MongoDB.Database, config.MongoDB.Auth_db)
+	if err != nil {
+		panic(err)
+	}
+
+	logger.Println("Item use case initializing")
+
+	itemUseCase := usercases.NewItemUseCase(
+		mongoDB.NewStorage(mongoDBClient, config.MongoDB.Collection, logger),
+	)
+
+	logger.Println("Item api initializing")
+
+	item := v1.NewItemHandler(itemUseCase, logger)
 	item.Register(router)
 
 	app := App{
