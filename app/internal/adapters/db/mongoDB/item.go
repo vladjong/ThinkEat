@@ -26,6 +26,9 @@ func NewStorage(database *mongo.Database, collection string, logger *logging.Log
 
 func (d *itemStorage) Create(ctx context.Context, item *entities.Item) (string, error) {
 	d.logger.Debug("Create item")
+	if err := d.checkUniqueness(ctx, item); err != nil {
+		return "", fmt.Errorf("this item alredy exist: %v", err)
+	}
 	result, err := d.collection.InsertOne(ctx, item)
 	if err != nil {
 		return "", fmt.Errorf("failed to create item due to errro: %v", err)
@@ -35,7 +38,7 @@ func (d *itemStorage) Create(ctx context.Context, item *entities.Item) (string, 
 		return oid.Hex(), nil
 	}
 	d.logger.Trace(item)
-	return "", fmt.Errorf("failde to convert objectId to hex: %s", oid)
+	return "", fmt.Errorf("failed to convert objectId to hex: %s", oid)
 }
 
 func (d *itemStorage) GetID(ctx context.Context, id string) (item *entities.Item, err error) {
@@ -122,4 +125,16 @@ func (d *itemStorage) GetAll(ctx context.Context) (items []*entities.Item, err e
 		return items, fmt.Errorf("failed to read all documents error: %v", err)
 	}
 	return items, nil
+}
+
+func (d *itemStorage) checkUniqueness(ctx context.Context, item *entities.Item) error {
+	filter := bson.M{
+		"name":     item.Name,
+		"place_id": item.PlaceId,
+	}
+	result := d.collection.FindOne(ctx, filter)
+	if result.Err() != nil {
+		return nil
+	}
+	return fmt.Errorf("item is exist")
 }
