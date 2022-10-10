@@ -5,17 +5,21 @@ type Item struct {
 	Name     string   `json:"name" bson:"name,omitempty"`
 	Describe string   `json:"describe" bson:"describe"`
 	Category []string `json:"category" bson:"category,omitempty"`
-	Price    int      `json:"price" bson:"price,omitempty"`
-	Weight   float32  `json:"weight" bson:"weight"`
+	Price    float64  `json:"price" bson:"price,omitempty"`
+	Weight   float64  `json:"weight" bson:"weight"`
 	Photo    string   `json:"photo" bson:"photo"`
-	// laceId  Place
+	PlaceId  string   `json:"place_id" bson:"place_id"`
 }
 
-// type ItemDTO struct {
-// 	Name     string   `json:"name"`
-// 	Describe string   `json:"describe"`
-// 	Category []string `json:"category"`
-// 	Price    int      `json:"price"`
-// 	Weight   float32  `json:"weight"`
-// 	Photo    string   `json:"photo"`
-// }
+func NewItem(id, name, describe, photo, placeId string, category []string, price, weight float64) *Item {
+	return &Item{
+		ID:       id,
+		Name:     name,
+		Describe: describe,
+		Category: category,
+		Price:    price,
+		Weight:   weight,
+		Photo:    photo,
+		PlaceId:  placeId,
+	}
+}

@@ -28,7 +28,6 @@ func NewItemHandler(itemUseCase interfaces.Item, logger *logging.Logger) *itemHa
 }
 
 func (h *itemHandler) Register(router *httprouter.Router) {
-	// router.HandlerFunc(http.MethodGet, itemsUrl, apperror.MiddleWare(h.GetItems))
 	router.GET(itemsUrl, h.GetItems)
 	router.POST(itemsUrl, h.CreateItems)
 	router.PUT(itemsUrl, h.UpdateItem)
@@ -40,11 +39,12 @@ func (h *itemHandler) Register(router *httprouter.Router) {
 func (h *itemHandler) GetItems(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	items, err := h.itemUseCase.GetAll(r.Context())
 	if err != nil {
-		w.WriteHeader(400)
+		w.WriteHeader(http.StatusBadRequest)
 		panic(err)
 	}
 	itemsBytes, err := json.Marshal(items)
 	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
 		panic(err)
 	}
 	w.WriteHeader(http.StatusOK)
@@ -55,10 +55,12 @@ func (h *itemHandler) GetItemByUUID(w http.ResponseWriter, r *http.Request, ps h
 	id := ps.ByName("uuid")
 	item, err := h.itemUseCase.GetID(r.Context(), id)
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		panic(err)
 	}
 	itemBytes, err := json.Marshal(item)
 	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
 		panic(err)
 	}
 	w.WriteHeader(http.StatusOK)
@@ -69,9 +71,14 @@ func (h *itemHandler) CreateItems(w http.ResponseWriter, r *http.Request, _ http
 	decoder := json.NewDecoder(r.Body)
 	var item entities.Item
 	if err := decoder.Decode(&item); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
 		panic(err)
 	}
-	h.itemUseCase.Create(r.Context(), &item)
+	_, err := h.itemUseCase.Create(r.Context(), &item)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		panic(err)
+	}
 	w.WriteHeader(http.StatusCreated)
 }
 
@@ -79,25 +86,21 @@ func (h *itemHandler) UpdateItem(w http.ResponseWriter, r *http.Request, ps http
 	decoder := json.NewDecoder(r.Body)
 	var item entities.Item
 	if err := decoder.Decode(&item); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
 		panic(err)
 	}
 	if err := h.itemUseCase.Update(r.Context(), &item); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		panic(err)
 	}
-	w.Write([]byte("this update item"))
-	w.WriteHeader(204)
+	w.WriteHeader(http.StatusNoContent)
 }
-
-// func (h *itemHandler) PartiallyUpdateItem(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-// 	w.Write([]byte("this partional item"))
-// 	w.WriteHeader(204)
-// }
 
 func (h *itemHandler) DeleteUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id := ps.ByName("uuid")
 	if err := h.itemUseCase.Delete(r.Context(), id); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		panic(err)
 	}
-	w.Write([]byte("this delete item"))
-	w.WriteHeader(204)
+	w.WriteHeader(http.StatusNoContent)
 }
