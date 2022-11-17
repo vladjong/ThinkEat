@@ -5,6 +5,8 @@ import (
 
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/jmoiron/sqlx"
+	"github.com/pressly/goose"
+	"github.com/sirupsen/logrus"
 )
 
 type PostgresConfig struct {
@@ -24,6 +26,14 @@ func NewClient(cfg PostgresConfig) (*sqlx.DB, error) {
 	}
 	err = db.Ping()
 	if err != nil {
+		return nil, err
+	}
+
+	logrus.Infoln("Start migrating database")
+	if err := goose.SetDialect("postgres"); err != nil {
+		return nil, err
+	}
+	if err := goose.Up(db.DB, "migrations"); err != nil {
 		return nil, err
 	}
 	return db, nil
