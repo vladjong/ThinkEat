@@ -54,9 +54,8 @@ func NewContacts(city, street, weekend string, opening, closure time.Time) *Cont
 	}
 }
 
-func NewPlace(id, name, describe, url, photoId string, category Category, contacts Contacts) *Place {
+func NewPlace(name, describe, url, photoId string, category Category, contacts Contacts) *Place {
 	return &Place{
-		ID:       id,
 		Name:     name,
 		Describe: describe,
 		URL:      url,

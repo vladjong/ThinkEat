@@ -1,5 +1,7 @@
 APP_BIN = build/app
 
+all: build
+
 build: clean $(APP_BIN)
 
 $(APP_BIN):
@@ -8,9 +10,3 @@ $(APP_BIN):
 
 clean:
 	rm -rf build || true
-
-swagger:
-	swag init -g cmd/main/main.go -o ./docs
-
-lint:
-	golangci-lint run

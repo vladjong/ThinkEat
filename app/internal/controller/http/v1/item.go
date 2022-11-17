@@ -7,7 +7,6 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/vladjong/ThinkEat/internal/entities"
 	"github.com/vladjong/ThinkEat/internal/interfaces"
-	"github.com/vladjong/ThinkEat/pkg/logging"
 )
 
 const (
@@ -17,13 +16,11 @@ const (
 
 type itemHandler struct {
 	itemUseCase interfaces.Item
-	logger      *logging.Logger
 }
 
-func NewItemHandler(itemUseCase interfaces.Item, logger *logging.Logger) *itemHandler {
+func NewItemHandler(itemUseCase interfaces.Item) *itemHandler {
 	return &itemHandler{
 		itemUseCase: itemUseCase,
-		logger:      logger,
 	}
 }
 
@@ -33,7 +30,7 @@ func (h *itemHandler) Register(router *httprouter.Router) {
 	router.PUT(itemsUrl, h.UpdateItem)
 	router.GET(itemUrl, h.GetItemByUUID)
 	// router.PATCH(itemUrl, h.PartiallyUpdateItem)
-	router.DELETE(itemUrl, h.DeleteUser)
+	router.DELETE(itemUrl, h.DeleteItem)
 }
 
 func (h *itemHandler) GetItems(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -96,7 +93,7 @@ func (h *itemHandler) UpdateItem(w http.ResponseWriter, r *http.Request, ps http
 	w.WriteHeader(http.StatusNoContent)
 }
 
-func (h *itemHandler) DeleteUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (h *itemHandler) DeleteItem(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	id := ps.ByName("uuid")
 	if err := h.itemUseCase.Delete(r.Context(), id); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
