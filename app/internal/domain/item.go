@@ -1,15 +1,20 @@
-package usecase
+package domain
 
 import (
-	"github.com/vladjong/ThinkEat/internal/interfaces"
+	"github.com/vladjong/ThinkEat/internal/adapters/db"
+	"github.com/vladjong/ThinkEat/internal/entities"
 )
 
 type itemUseCase struct {
-	storage interfaces.ItemStorages
+	storage db.ItemStorager
 }
 
-func New(storage interfaces.ItemStorages) *itemUseCase {
+func New(storage db.ItemStorager) *itemUseCase {
 	return &itemUseCase{storage: storage}
+}
+
+func (i *itemUseCase) AddItem(item *entities.Item) error {
+	return i.storage.AddItem(item)
 }
 
 // func (i *itemUseCase) Create(ctx context.Context, item *entities.Item) (string, error) {

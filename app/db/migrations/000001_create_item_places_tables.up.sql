@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS contacts (
 
 CREATE TABLE IF NOT EXISTS categories (
 	id serial PRIMARY KEY,
-	name varchar(255) NOT NULL
+	name varchar(255) UNIQUE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS places (
@@ -35,6 +35,6 @@ CREATE TABLE IF NOT EXISTS items (
 	price numeric(15,2) NOT NULL,
 	weight float,
 	photo varchar(255),
-    categories_id bigint REFERENCES categories (id) NOT NULL,
+    category_id bigint REFERENCES categories (id) NOT NULL,
 	place_id bigint REFERENCES places (id) NOT NULL
 );

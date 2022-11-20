@@ -12,12 +12,12 @@ import "github.com/jmoiron/sqlx"
 // 	CustomerReportView  = "customer_report"
 // )
 
-type userBalanceStorage struct {
+type thinkEatStorage struct {
 	db *sqlx.DB
 }
 
-func New(db *sqlx.DB) *userBalanceStorage {
-	return &userBalanceStorage{
+func New(db *sqlx.DB) *thinkEatStorage {
+	return &thinkEatStorage{
 		db: db,
 	}
 }

@@ -1,21 +1,21 @@
-package http
+package handler
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/vladjong/ThinkEat/internal/domain"
 )
 
-type handler struct {
-	// userBalance usecase.UserBalanse
+type Handler struct {
+	itemUseCase domain.ItemDomain
 }
 
-func New() *handler {
-	return &handler{}
-	// return &handler{
-	// 	userBalance: userBalance,
-	// }
+func New(item domain.ItemDomain) *Handler {
+	return &Handler{
+		itemUseCase: item,
+	}
 }
 
-func (h *handler) NewRouter() *gin.Engine {
+func (h *Handler) NewRouter() *gin.Engine {
 	router := gin.New()
 
 	// router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
