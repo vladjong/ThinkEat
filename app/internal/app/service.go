@@ -49,8 +49,9 @@ func (s *Service) startHTTP() {
 	logrus.Info("HTTP Server initializing")
 	server := new(server.Server)
 	storageItem := postgressql.New(s.postgresClient)
-	domainItem := domain.New(storageItem)
-	handlers := handler.New(domainItem)
+	domainItem := domain.NewItem(storageItem)
+	domainPlace := domain.NewPlace(storageItem)
+	handlers := handler.New(domainItem, domainPlace)
 	go func() {
 		if err := server.Run(s.cfg.Listen.Port, handlers.NewRouter()); err != nil {
 			logrus.Fatalf("error: occured while running HTTP Server: %s", err.Error())

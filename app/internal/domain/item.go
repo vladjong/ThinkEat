@@ -9,7 +9,7 @@ type itemUseCase struct {
 	storage db.ItemStorager
 }
 
-func New(storage db.ItemStorager) *itemUseCase {
+func NewItem(storage db.ItemStorager) *itemUseCase {
 	return &itemUseCase{storage: storage}
 }
 

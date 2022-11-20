@@ -1,64 +1,26 @@
 package entities
 
-// type Place struct {
-// 	ID       string   `json:"id" bson:"_id,omitempty"`
-// 	Name     string   `json:"name" bson:"name,omitempty"`
-// 	Describe string   `json:"describe" bson:"describe,omitempty"`
-// 	URL      string   `json:"url" bson:"url"`
-// 	PhotoId  string   `json:"photoId" bson:"photoId"`
-// 	Category Category `json:"category" bson:"category"`
-// 	Contacts Contacts `json:"contacts" bson:"contacts"`
-// }
+import "time"
 
-// type Category struct {
-// 	Class   string `json:"class" bson:"class,omitempty"`
-// 	Kitchen string `json:"kitchen" bson:"kitchen,omitempty"`
-// }
+type Place struct {
+	ID       int      `json:"id" db:"id"`
+	Name     string   `json:"name" db:"name,omitempty"`
+	Describe string   `json:"describe" db:"describe"`
+	URL      string   `json:"url" db:"url"`
+	Photo    string   `json:"photo" db:"photo"`
+	Class    string   `json:"class" db:"class"`
+	Contacts Contacts `json:"contacts" db:"contacts"`
+}
 
-// type Contacts struct {
-// 	Address  Address  `json:"adress" bson:"adress,omitempty"`
-// 	TimeWork TimeWork `json:"time_work" bson:"time_work"`
-// }
+type Contacts struct {
+	City         string `json:"city" db:"city"`
+	Street       string `json:"street" db:"street"`
+	WorkSchedule WorkSchedule
+}
 
-// type Address struct {
-// 	City   string `json:"city" bson:"city,omitempty"`
-// 	Street string `json:"street" bson:"street,omitempty"`
-// }
-
-// type TimeWork struct {
-// 	Opening time.Time `json:"opening" bson:"opening,omitempty"`
-// 	Closure time.Time `json:"closure" bson:"closure,omitempty"`
-// 	Weekend string    `json:"weekend" bson:"weekend,omitempty"`
-// }
-
-// func NewCategory(class, kitchen string) *Category {
-// 	return &Category{
-// 		Class:   class,
-// 		Kitchen: kitchen,
-// 	}
-// }
-
-// func NewContacts(city, street, weekend string, opening, closure time.Time) *Contacts {
-// 	return &Contacts{
-// 		Address: Address{
-// 			City:   city,
-// 			Street: street,
-// 		},
-// 		TimeWork: TimeWork{
-// 			Opening: opening,
-// 			Closure: closure,
-// 			Weekend: weekend,
-// 		},
-// 	}
-// }
-
-// func NewPlace(name, describe, url, photoId string, category Category, contacts Contacts) *Place {
-// 	return &Place{
-// 		Name:     name,
-// 		Describe: describe,
-// 		URL:      url,
-// 		PhotoId:  photoId,
-// 		Category: category,
-// 		Contacts: contacts,
-// 	}
-// }
+type WorkSchedule struct {
+	BegginTime time.Time `json:"beggin_time" db:"beggin_time"`
+	EndTime    time.Time `json:"end_time" db:"end_time"`
+	Weekend    int       `json:"weekend" db:"weekend"`
+	IsDayOff   bool      `json:"is_day_off" db:"is_day_off"`
+}

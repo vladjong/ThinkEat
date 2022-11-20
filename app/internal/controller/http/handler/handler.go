@@ -6,12 +6,14 @@ import (
 )
 
 type Handler struct {
-	itemUseCase domain.ItemDomain
+	itemUseCase  domain.ItemDomain
+	placeUseCase domain.PlaceDomain
 }
 
-func New(item domain.ItemDomain) *Handler {
+func New(item domain.ItemDomain, place domain.PlaceDomain) *Handler {
 	return &Handler{
-		itemUseCase: item,
+		itemUseCase:  item,
+		placeUseCase: place,
 	}
 }
 
@@ -30,14 +32,14 @@ func (h *Handler) NewRouter() *gin.Engine {
 			item.PUT("/:id", h.UpdateItem)
 			item.DELETE("/:id", h.DeleteItem)
 		}
-		// place := api.Group("/place")
-		// {
-		// 	place.POST("/")
-		// 	place.GET("/")
-		// 	place.GET("/:id")
-		// 	place.PUT("/:id")
-		// 	place.DELETE("/:id")
-		// }
+		place := api.Group("/place")
+		{
+			place.POST("/", h.AddPlace)
+			place.GET("/", h.GetAllPlaces)
+			place.GET("/:id", h.GetPlace)
+			place.PUT("/:id", h.UpdatePlace)
+			place.DELETE("/:id", h.DeletePlace)
+		}
 	}
 	return router
 }

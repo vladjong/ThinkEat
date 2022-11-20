@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS work_schedule (
 	id serial PRIMARY KEY,
-	weekday varchar(15) NOT NULL,
+	weekday int NOT NULL,
 	beggin_time time,
 	end_time time,
     is_day_off boolean NOT NULL
