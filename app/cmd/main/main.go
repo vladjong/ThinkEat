@@ -6,7 +6,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 	"github.com/vladjong/ThinkEat/config"
-	"github.com/vladjong/ThinkEat/internal/service"
+	"github.com/vladjong/ThinkEat/internal/app"
 )
 
 func main() {
@@ -17,7 +17,7 @@ func main() {
 		log.Fatalf("error loading env variables: %s", err.Error())
 	}
 	logrus.Info("running service")
-	service, err := service.NewService(cfg)
+	service, err := app.NewService(cfg)
 	if err != nil {
 		logrus.Fatal(err)
 	}
