@@ -31,10 +31,6 @@ func (h *Handler) GetItem(c *gin.Context) {
 
 }
 
-func (h *Handler) UpdateItem(c *gin.Context) {
-
-}
-
 func (h *Handler) DeleteItem(c *gin.Context) {
 
 }

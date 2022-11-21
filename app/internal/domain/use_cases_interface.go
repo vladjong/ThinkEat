@@ -7,5 +7,9 @@ type ItemDomain interface {
 }
 
 type PlaceDomain interface {
-	AddPlace(place *entities.Place) error
+	AddPlace(place *entities.PlacePost) error
+	GetAllPlaces() (places []entities.Place, err error)
+	GetPlace(id int) (place entities.Place, err error)
+	UpdatePlace(place *entities.PlacePost, id int) error
+	DeletePlace(id int) error
 }

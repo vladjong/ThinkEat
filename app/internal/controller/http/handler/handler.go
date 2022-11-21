@@ -29,7 +29,6 @@ func (h *Handler) NewRouter() *gin.Engine {
 			item.POST("/", h.AddItem)
 			item.GET("/", h.GetAllItems)
 			item.GET("/:id", h.GetItem)
-			item.PUT("/:id", h.UpdateItem)
 			item.DELETE("/:id", h.DeleteItem)
 		}
 		place := api.Group("/place")
