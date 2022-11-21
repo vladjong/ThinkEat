@@ -3,7 +3,6 @@ package postgressql
 import (
 	"errors"
 
-	"github.com/sirupsen/logrus"
 	"github.com/vladjong/ThinkEat/internal/entities"
 )
 
@@ -69,7 +68,6 @@ func (s *thinkEatStorage) GetPlace(id int) (place entities.Place, err error) {
 }
 
 func (s *thinkEatStorage) UpdatePlace(place *entities.PlacePost, id int) error {
-	logrus.Info(place)
 	tx, err := s.db.Begin()
 	if err != nil {
 		return err
@@ -87,7 +85,21 @@ func (s *thinkEatStorage) UpdatePlace(place *entities.PlacePost, id int) error {
 }
 
 func (s *thinkEatStorage) DeletePlace(id int) error {
+	tx, err := s.db.Begin()
+	if err != nil {
+		return err
+	}
+	var idPlace int
+	queruSelect := `SELECT id FROM places WHERE id = $1`
+	if err := s.db.Get(&idPlace, queruSelect, id); err != nil {
+		return err
+	}
 	query := `DELETE FROM places WHERE id = $1`
-	_, err := s.db.Exec(query, id)
-	return err
+	if _, err = tx.Exec(query, id); err != nil {
+		if rb := tx.Rollback(); rb != nil {
+			return rb
+		}
+		return err
+	}
+	return tx.Commit()
 }

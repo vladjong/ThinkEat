@@ -12,11 +12,11 @@ import (
 func (h *Handler) AddPlace(c *gin.Context) {
 	var inputPlace entities.PlacePost
 	if err := c.BindJSON(&inputPlace); err != nil {
-		logrus.Info(err)
+		errorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 	if err := h.placeUseCase.AddPlace(&inputPlace); err != nil {
-		logrus.Info(err)
+		errorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, map[string]interface{}{
@@ -27,7 +27,7 @@ func (h *Handler) AddPlace(c *gin.Context) {
 func (h *Handler) GetAllPlaces(c *gin.Context) {
 	places, err := h.placeUseCase.GetAllPlaces()
 	if err != nil {
-		logrus.Info(err)
+		errorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, places)
@@ -36,12 +36,12 @@ func (h *Handler) GetAllPlaces(c *gin.Context) {
 func (h *Handler) GetPlace(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		logrus.Info(err)
+		errorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 	place, err := h.placeUseCase.GetPlace(id)
 	if err != nil {
-		logrus.Info(err)
+		errorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, place)
@@ -50,16 +50,16 @@ func (h *Handler) GetPlace(c *gin.Context) {
 func (h *Handler) UpdatePlace(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		logrus.Info(err)
+		errorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 	var inputPlace entities.PlacePost
 	if err := c.BindJSON(&inputPlace); err != nil {
-		logrus.Info(err)
+		errorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 	if err := h.placeUseCase.UpdatePlace(&inputPlace, id); err != nil {
-		logrus.Info(err)
+		errorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, map[string]interface{}{
@@ -74,7 +74,7 @@ func (h *Handler) DeletePlace(c *gin.Context) {
 		return
 	}
 	if err := h.placeUseCase.DeletePlace(id); err != nil {
-		logrus.Info(err)
+		errorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, map[string]interface{}{

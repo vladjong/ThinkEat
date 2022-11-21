@@ -20,6 +20,9 @@ func New(item domain.ItemDomain, place domain.PlaceDomain) *Handler {
 func (h *Handler) NewRouter() *gin.Engine {
 	router := gin.New()
 
+	router.Use(gin.Logger())
+	router.Use(gin.Recovery())
+
 	// router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	api := router.Group("/api")
