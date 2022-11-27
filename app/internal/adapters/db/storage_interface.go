@@ -1,9 +1,15 @@
 package db
 
-import "github.com/vladjong/ThinkEat/internal/entities"
+import (
+	"github.com/vladjong/ThinkEat/internal/entities"
+)
 
 type ItemStorager interface {
-	AddItem(item *entities.Item) error
+	AddItem(item entities.Item) error
+	GetAllItems() (items []entities.Item, err error)
+	GetItem(id int) (item entities.Item, err error)
+	UpdateItem(item entities.Item, id int) error
+	DeleteItem(id int) error
 }
 
 type PlaceStorager interface {

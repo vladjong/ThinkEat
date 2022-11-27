@@ -13,11 +13,6 @@ CREATE TABLE IF NOT EXISTS work_schedule (
 	contact_id bigint REFERENCES contacts (id) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS categories (
-	id serial PRIMARY KEY,
-	name varchar(255) UNIQUE NOT NULL
-);
-
 CREATE TABLE IF NOT EXISTS places (
 	id serial PRIMARY KEY,
 	name varchar(255) NOT NULL,
@@ -35,6 +30,17 @@ CREATE TABLE IF NOT EXISTS items (
 	price numeric(15,2) NOT NULL,
 	weight float,
 	photo varchar(255),
-    category_id bigint REFERENCES categories (id) NOT NULL,
+	type varchar(55),
 	place_id bigint REFERENCES places (id) NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS categories (
+	id serial PRIMARY KEY,
+	name varchar(55) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS all_items (
+	id serial PRIMARY KEY,
+	item_id bigint REFERENCES items (id) NOT NULL,
+	category_id bigint REFERENCES categories (id) NOT NULL
+)

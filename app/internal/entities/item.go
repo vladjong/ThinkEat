@@ -9,11 +9,6 @@ type Item struct {
 	Price    decimal.Decimal `json:"price" db:"price"`
 	Weight   float64         `json:"weight" db:"weight"`
 	Photo    string          `json:"photo" db:"photo"`
-	Category Category        `json:"category"`
+	Type     string          `json:"type" db:"type"`
 	PlaceId  int             `json:"place_id" db:"place_id"`
-}
-
-type Category struct {
-	ID   int    `json:"id" db:"id"`
-	Name string `json:"name" db:"name,omitempty"`
 }

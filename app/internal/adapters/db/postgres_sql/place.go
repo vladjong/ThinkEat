@@ -32,9 +32,9 @@ func (s *thinkEatStorage) AddPlace(place *entities.PlacePost) error {
 			return err
 		}
 	}
-	queryItem := `INSERT INTO places (name, describe, url, photo, class, contact_id)
+	queryPlace := `INSERT INTO places (name, describe, url, photo, class, contact_id)
 					VALUES ($1, $2, $3, $4, $5, $6);`
-	if _, err := tx.Exec(queryItem, place.Name, place.Describe, place.URL, place.Photo, place.Class, idContact); err != nil {
+	if _, err := tx.Exec(queryPlace, place.Name, place.Describe, place.URL, place.Photo, place.Class, idContact); err != nil {
 		if rb := tx.Rollback(); rb != nil {
 			return rb
 		}
@@ -70,6 +70,9 @@ func (s *thinkEatStorage) GetPlace(id int) (place entities.Place, err error) {
 func (s *thinkEatStorage) UpdatePlace(place *entities.PlacePost, id int) error {
 	tx, err := s.db.Begin()
 	if err != nil {
+		return err
+	}
+	if _, err := s.GetPlace(id); err != nil {
 		return err
 	}
 	queryItem := `UPDATE places

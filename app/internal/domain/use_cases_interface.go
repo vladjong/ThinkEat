@@ -1,9 +1,16 @@
 package domain
 
-import "github.com/vladjong/ThinkEat/internal/entities"
+import (
+	"github.com/vladjong/ThinkEat/internal/controller/http/handler/dto"
+	"github.com/vladjong/ThinkEat/internal/entities"
+)
 
 type ItemDomain interface {
-	AddItem(item *entities.Item) error
+	AddItem(item dto.ItemDto) error
+	GetAllItems() (items []entities.Item, err error)
+	GetItem(id int) (item entities.Item, err error)
+	UpdateItem(itemDto dto.ItemDto, id int) error
+	DeleteItem(id int) error
 }
 
 type PlaceDomain interface {

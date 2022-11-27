@@ -2,6 +2,7 @@ package domain
 
 import (
 	"github.com/vladjong/ThinkEat/internal/adapters/db"
+	"github.com/vladjong/ThinkEat/internal/controller/http/handler/dto"
 	"github.com/vladjong/ThinkEat/internal/entities"
 )
 
@@ -13,30 +14,40 @@ func NewItem(storage db.ItemStorager) *itemUseCase {
 	return &itemUseCase{storage: storage}
 }
 
-func (i *itemUseCase) AddItem(item *entities.Item) error {
+func (i *itemUseCase) AddItem(itemDto dto.ItemDto) error {
+	item := entities.Item{
+		Name:     itemDto.Name,
+		Describe: itemDto.Describe,
+		Price:    itemDto.Price,
+		Weight:   itemDto.Weight,
+		Photo:    itemDto.Photo,
+		Type:     itemDto.Type,
+		PlaceId:  itemDto.PlaceId,
+	}
 	return i.storage.AddItem(item)
 }
 
-// func (i *itemUseCase) Create(ctx context.Context, item *entities.Item) (string, error) {
-// 	return s.storage.Create(ctx, item)
-// }
+func (i *itemUseCase) GetAllItems() (items []entities.Item, err error) {
+	return i.storage.GetAllItems()
+}
 
-// func (s *itemUseCase) GetAll(ctx context.Context) ([]*entities.Item, error) {
-// 	return s.storage.GetAll(ctx)
-// }
+func (i *itemUseCase) GetItem(id int) (item entities.Item, err error) {
+	return i.storage.GetItem(id)
+}
 
-// func (s *itemUseCase) GetName(ctx context.Context, name string) ([]*entities.Item, error) {
-// 	return s.storage.GetName(ctx, name)
-// }
+func (i *itemUseCase) UpdateItem(itemDto dto.ItemDto, id int) error {
+	item := entities.Item{
+		Name:     itemDto.Name,
+		Describe: itemDto.Describe,
+		Price:    itemDto.Price,
+		Weight:   itemDto.Weight,
+		Photo:    itemDto.Photo,
+		Type:     itemDto.Type,
+		PlaceId:  itemDto.PlaceId,
+	}
+	return i.storage.UpdateItem(item, id)
+}
 
-// func (s *itemUseCase) GetID(ctx context.Context, id string) (*entities.Item, error) {
-// 	return s.storage.GetID(ctx, id)
-// }
-
-// func (s *itemUseCase) Update(ctx context.Context, item *entities.Item) error {
-// 	return s.storage.Update(ctx, item)
-// }
-
-// func (s *itemUseCase) Delete(ctx context.Context, id string) error {
-// 	return s.storage.Delete(ctx, id)
-// }
+func (i *itemUseCase) DeleteItem(id int) error {
+	return i.storage.DeleteItem(id)
+}
